@@ -1,5 +1,7 @@
 .clasp.json
 
+.clasp-kit.json
+
 .clasprc.json
 
 .env
