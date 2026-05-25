@@ -7,7 +7,7 @@ function routeRequest(e) {
   template.view = view;
   template.model = model;
   template.assessmentId = id;
-  template.appBaseUrl = CONFIG.WEB_APP_BASE_URL || ScriptApp.getService().getUrl() || '';
+  template.appBaseUrl = getWebAppBaseUrl_();
   template.pageTitle = pageTitle_(view, model);
   return template.evaluate()
     .setTitle(template.pageTitle)

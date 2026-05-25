@@ -14,13 +14,19 @@ function round2_(value) {
   return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
 }
 
+function getWebAppBaseUrl_() {
+  var configured = safeString_(CONFIG.WEB_APP_BASE_URL);
+  if (configured && configured !== 'PASTE_WEB_APP_DEPLOYMENT_URL_HERE') return configured;
+  return ScriptApp.getService().getUrl() || '';
+}
+
 function buildResultUrl_(assessmentId) {
-  var base = CONFIG.WEB_APP_BASE_URL || ScriptApp.getService().getUrl() || '';
+  var base = getWebAppBaseUrl_();
   return base + '?view=result&id=' + encodeURIComponent(assessmentId);
 }
 
 function buildRouteUrl_(view, params) {
-  var base = CONFIG.WEB_APP_BASE_URL || ScriptApp.getService().getUrl() || '';
+  var base = getWebAppBaseUrl_();
   var query = ['view=' + encodeURIComponent(view || 'home')];
   Object.keys(params || {}).forEach(function (key) {
     query.push(encodeURIComponent(key) + '=' + encodeURIComponent(params[key]));
