@@ -29,3 +29,11 @@ function apiInsertAssessmentToProposal(assessmentId, proposalDocUrl) {
     return toUserError_(err);
   }
 }
+
+function apiGetLatestAssessments(limit) {
+  try {
+    return getLatestAssessments(limit || 5);
+  } catch (err) {
+    return toUserError_(err);
+  }
+}

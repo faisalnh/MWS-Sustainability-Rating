@@ -61,10 +61,44 @@ function replaceFirstRatingPlaceholder_(docId, insertedText, resultUrl) {
   var end = found.getEndOffsetInclusive();
   text.deleteText(start, end);
   text.insertText(start, insertedText);
+
+  // Identify the rating letter (the leading token before the space, e.g. "S", "A", "B", "C", "D").
+  var spaceIdx = insertedText.indexOf(' ');
+  var ratingLetter = spaceIdx > 0 ? insertedText.substring(0, spaceIdx) : insertedText.charAt(0);
+  var ratingColor = ratingColorHex_(ratingLetter);
+
+  // Bold + color only the rating letter; keep the score number in normal content style.
+  var letterStart = start;
+  var letterEnd = start + ratingLetter.length - 1;
+  if (letterEnd >= letterStart) {
+    text.setBold(letterStart, letterEnd, true);
+    if (ratingColor) text.setForegroundColor(letterStart, letterEnd, ratingColor);
+  }
+
+  // Ensure the score portion (everything after the letter, up to the link label) stays normal weight & default color.
   var linkLabel = 'Assessment Result';
   var linkStart = start + insertedText.indexOf(linkLabel);
   var linkEnd = linkStart + linkLabel.length - 1;
+  var afterLetter = letterEnd + 1;
+  if (linkStart - 1 >= afterLetter) {
+    text.setBold(afterLetter, linkStart - 1, false);
+    text.setForegroundColor(afterLetter, linkStart - 1, '#2d2d2d');
+  }
+
+  // Link the "Assessment Result" label using the document's default link style.
   text.setLinkUrl(linkStart, linkEnd, resultUrl);
+  text.setBold(linkStart, linkEnd, false);
   doc.saveAndClose();
   return { replacements: 1 };
+}
+
+function ratingColorHex_(rating) {
+  switch (String(rating || '').toUpperCase()) {
+    case 'S': return '#096b3a';
+    case 'A': return '#145a8a';
+    case 'B': return '#805600';
+    case 'C': return '#934b00';
+    case 'D': return '#6b0f0a';
+    default:  return '#2d2d2d';
+  }
 }

@@ -137,6 +137,36 @@ function getAssessmentResult(assessmentId) {
   };
 }
 
+function getLatestAssessments(limit) {
+  limit = Math.max(1, Math.min(50, Number(limit) || 5));
+  var sheet = getSheet_(CONFIG.SHEET_NAMES.ASSESSMENTS);
+  if (sheet.getLastRow() < 2) return { success: true, assessments: [] };
+  var headers = CONFIG.HEADERS[CONFIG.SHEET_NAMES.ASSESSMENTS];
+  var data = sheet.getRange(2, 1, sheet.getLastRow() - 1, headers.length).getValues();
+  var rows = data.map(function (row) { return asMapByHeader_(headers, row); });
+  rows.sort(function (a, b) {
+    var ta = new Date(a.created_at).getTime() || 0;
+    var tb = new Date(b.created_at).getTime() || 0;
+    return tb - ta;
+  });
+  var latest = rows.slice(0, limit).map(function (r) {
+    return {
+      assessment_id: r.assessment_id,
+      created_at: r.created_at,
+      created_by: r.created_by,
+      proposal_model: r.proposal_model,
+      proposal_title: r.proposal_title,
+      raw_score: r.raw_score,
+      final_rating: r.final_rating,
+      final_rating_label: r.final_rating_label,
+      status: r.status,
+      result_url: r.result_url,
+      insert_url: buildRouteUrl_('insert', { id: r.assessment_id })
+    };
+  });
+  return { success: true, assessments: latest };
+}
+
 function updateAssessmentProposalDoc_(assessmentId, docUrl, docId) {
   var sheet = getSheet_(CONFIG.SHEET_NAMES.ASSESSMENTS);
   var headers = CONFIG.HEADERS[CONFIG.SHEET_NAMES.ASSESSMENTS];

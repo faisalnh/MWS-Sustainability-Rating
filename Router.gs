@@ -19,5 +19,6 @@ function pageTitle_(view, model) {
   if (view === 'form') return (MODEL_LABELS[model] || 'Assessment Form') + ' | Sustainability Rating';
   if (view === 'result') return 'Assessment Result | Sustainability Rating';
   if (view === 'insert') return 'Insert Rating | Sustainability Rating';
+  if (view === 'latest') return 'Latest Assessments | Sustainability Rating';
   return 'MWS Sustainability Rating';
 }
