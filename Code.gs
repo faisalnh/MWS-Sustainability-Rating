@@ -6,7 +6,9 @@ function submitAssessment(payload) {
   try {
     payload = validateSubmissionPayload(payload);
     var calculation = calculateAssessment(payload);
-    return saveAssessment(payload, calculation);
+    var saved = saveAssessment(payload, calculation);
+        saved.insertUrl = buildRouteUrl_('insert', { id: saved.assessmentId });
+        return saved;
   } catch (err) {
     return toUserError_(err);
   }
