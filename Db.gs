@@ -7,19 +7,36 @@ function getDb_() {
 
 function initializeDatabase() {
   var ss = getDb_();
+  var actions = [];
+  Logger.log('Initializing sustainability rating database: ' + ss.getName() + ' (' + CONFIG.DB_SPREADSHEET_ID + ')');
   Object.keys(CONFIG.SHEET_NAMES).forEach(function (key) {
     var name = CONFIG.SHEET_NAMES[key];
-    var sheet = ss.getSheetByName(name) || ss.insertSheet(name);
+    var sheet = ss.getSheetByName(name);
+    var created = false;
+    if (!sheet) {
+      sheet = ss.insertSheet(name);
+      created = true;
+    }
     var headers = CONFIG.HEADERS[name];
+    var wroteHeaders = false;
     if (sheet.getLastRow() === 0) {
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       sheet.setFrozenRows(1);
+      wroteHeaders = true;
     } else {
       var existing = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), headers.length)).getValues()[0];
-      if (!existing[0]) sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+      if (!existing[0]) {
+        sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+        sheet.setFrozenRows(1);
+        wroteHeaders = true;
+      }
     }
+    var action = name + ': ' + (created ? 'created' : 'exists') + ', headers ' + (wroteHeaders ? 'written' : 'already present');
+    actions.push(action);
+    Logger.log(action);
   });
-  return { success: true, message: 'Database initialized.' };
+  Logger.log('Database initialized successfully. Sheets checked: ' + actions.length);
+  return { success: true, message: 'Database initialized.', actions: actions };
 }
 
 function getSheet_(name) {

@@ -3,7 +3,7 @@
  * Replace DB_SPREADSHEET_ID and WEB_APP_BASE_URL after deployment.
  */
 var CONFIG = {
-  DB_SPREADSHEET_ID: 'PASTE_SPREADSHEET_ID_HERE',
+  DB_SPREADSHEET_ID: '14NfLqoIPxU1QxnTOvJPZyvVFEvuo6KcJ86a2E2i68Xw',
   WEB_APP_BASE_URL: 'https://script.google.com/a/macros/millennia21.id/s/AKfycbyB0UAqw1cBE-IumvNayG0EBpjCm655VlQKEhgCZRpC/dev',
   RUBRIC_VERSION: '2025-01-MWS-MADLABS-SUSTAINABILITY-RATING',
   PLACEHOLDER: '<<rating>>',
